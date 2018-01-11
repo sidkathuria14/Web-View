@@ -1,15 +1,18 @@
 package com.example.sidkathuria14.webview;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 webView.getSettings().setJavaScriptEnabled(true);
 
 
+        webView.addJavascriptInterface(new WebAppInterface(this), "Android");
 
 
         webView.setWebChromeClient(new WebChromeClient());
@@ -43,11 +47,25 @@ webView.getSettings().setJavaScriptEnabled(true);
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
-                return true;
-            }
-        });
+
+                    return true;
+                }
+
+            });
+//        });
         // Load the webpage
-        webView.loadUrl("http://google.com/");
+        webView.loadUrl("https://google.com/");
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Check if the key event was the Back button and if there's history
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
+            webView.goBack();
+            return true;
+        }
+        // If it wasn't the Back key or there's no web page history, bubble up to the default
+        // system behavior (probably exit the activity)
+        return super.onKeyDown(keyCode, event);
     }
     }
 
